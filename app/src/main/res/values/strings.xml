@@ -17,10 +17,16 @@
     <string name="disable_meet_new_people">Disable Meet New People</string>
     <string name="disable_read_receipts">Disable Read Receipts</string>
     <string name="disable_typing_receipts">Disable Typing Receipts</string>
-    <string name="warning_disclaimer">Changing settings automatically kills Kik in the background\n\nKIK is the property of KIK INTERACTIVE INC. XKik is in no way affiliated with, authorized, maintained, sponsored or endorsed by KIK INTERACTIVE INC or any of its affiliates or subsidiaries. This is an independent application.</string>
-    <string name="compability">Compatible with Kik 11.35.0.18701</string>
-    <string name="version">Version 1.1.5 \n alroy214 edit</string>
-    <string name="welcome_to_xkik">Welcome to XKik!</string>
+    <string name="warning_disclaimer">
+        Changing settings will only take effect after the Kik app is reopened.\n
+        <b>Disclaimer:</b>\n
+        KIK is the property of KIK INTERACTIVE INC. XKik is in no way affiliated with, authorized,
+        maintained, sponsored or endorsed by KIK INTERACTIVE INC or any of its affiliates or subsidiaries.
+        This is an independent application.</string>
+    <string name="compability">Compatible with Kik \</string>
+    <string name="version">Version: \</string>
+    <string name="edit">alroy214 edit</string>
+    <string name="welcome_to_xkik">Welcome to XKik Refreshed!</string>
     <string name="xkik_logo">XKik Logo</string>
     <string name="enable_dev_mode">Enable Dev Mode</string>
     <string name="technical_settings">Technical Settings</string>

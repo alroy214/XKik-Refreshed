@@ -20,7 +20,7 @@ public class PrefsKeys {
     public static final String AUTO_LOOP = "autoloop";
     public static final String AUTO_PLAY = "autoplay";
     public static final String AUTO_MUTE = "automute";
-    public static final String UNFILLED_GIFS = "unfilterGIFs";
+    public static final String UNFILTERED_GIFS = "unfilterGIFs";
     public static final String GIF_PICTURES = "gifPictures";
     public static final String SCROLLING_TXT = "scrollingtxt";
     public static final String GRAPHICS_ENABLED = "graphicsEnabled";

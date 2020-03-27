@@ -46,7 +46,7 @@ import static alroy214.xkik.utilities.PrefsKeys.NO_READ_RECEIPT;
 import static alroy214.xkik.utilities.PrefsKeys.NO_TYPING;
 import static alroy214.xkik.utilities.PrefsKeys.OUTGOING_GRADIENT;
 import static alroy214.xkik.utilities.PrefsKeys.SCROLLING_TXT;
-import static alroy214.xkik.utilities.PrefsKeys.UNFILLED_GIFS;
+import static alroy214.xkik.utilities.PrefsKeys.UNFILTERED_GIFS;
 import static alroy214.xkik.utilities.PrefsKeys.WHOS_LURKING;
 
 
@@ -465,17 +465,17 @@ public class Settings {
         return sharedPreferences.getBoolean(AUTO_PLAY, false);
     }
 
-    public void setAutoplay(boolean autoPlay) {
+    public void setAutoPlay(boolean autoPlay) {
         editor.putBoolean(AUTO_PLAY, autoPlay);
         editor.commit();
     }
 
-    public boolean getUnfilterGIFs() {
-        return sharedPreferences.getBoolean(UNFILLED_GIFS, false);
+    public boolean getUnfilteredGIFs() {
+        return sharedPreferences.getBoolean(UNFILTERED_GIFS, false);
     }
 
-    public void setUnfilterGIFs(boolean unfilterGIFs) {
-        editor.putBoolean(UNFILLED_GIFS, unfilterGIFs);
+    public void setUnfilteredGIFs(boolean unfilteredGIFs) {
+        editor.putBoolean(UNFILTERED_GIFS, unfilteredGIFs);
         editor.commit();
     }
 

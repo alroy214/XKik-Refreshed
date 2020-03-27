@@ -91,7 +91,7 @@ public class ChatFragment extends Fragment {
         autoplay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                settings.setAutoplay(isChecked);
+                settings.setAutoPlay(isChecked);
             }
         });
         disableSave.setChecked(settings.getDisableSave());
@@ -102,11 +102,11 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        disableFilter.setChecked(settings.getUnfilterGIFs());
+        disableFilter.setChecked(settings.getUnfilteredGIFs());
         disableFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                settings.setUnfilterGIFs(isChecked);
+                settings.setUnfilteredGIFs(isChecked);
             }
         });
 

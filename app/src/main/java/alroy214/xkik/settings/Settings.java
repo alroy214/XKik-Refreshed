@@ -1,26 +1,33 @@
 package alroy214.xkik.settings;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.preference.PreferenceManager;
 
+import com.crossbowffs.remotepreferences.RemotePreferences;
 import com.google.gson.Gson;
 
 import org.apache.commons.io.FileUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import alroy214.xkik.enums.Colors;
+import alroy214.xkik.enums.Message;
+import de.robv.android.xposed.XSharedPreferences;
+
+import static alroy214.xkik.utilities.HookKeys.kikVersion;
 import static alroy214.xkik.utilities.PrefsKeys.AUTO_LOOP;
 import static alroy214.xkik.utilities.PrefsKeys.AUTO_MUTE;
 import static alroy214.xkik.utilities.PrefsKeys.AUTO_PLAY;
@@ -38,6 +45,7 @@ import static alroy214.xkik.utilities.PrefsKeys.FAKE_CAMERA;
 import static alroy214.xkik.utilities.PrefsKeys.FILE_LIST;
 import static alroy214.xkik.utilities.PrefsKeys.GRAPHICS_ENABLED;
 import static alroy214.xkik.utilities.PrefsKeys.INNER_WAVE;
+import static alroy214.xkik.utilities.PrefsKeys.IS_PREF_DEFAULT;
 import static alroy214.xkik.utilities.PrefsKeys.LONG_CAM;
 import static alroy214.xkik.utilities.PrefsKeys.LURKING_TOAST;
 import static alroy214.xkik.utilities.PrefsKeys.NO_HOOK;
@@ -48,6 +56,8 @@ import static alroy214.xkik.utilities.PrefsKeys.OUTGOING_GRADIENT;
 import static alroy214.xkik.utilities.PrefsKeys.SCROLLING_TXT;
 import static alroy214.xkik.utilities.PrefsKeys.UNFILTERED_GIFS;
 import static alroy214.xkik.utilities.PrefsKeys.WHOS_LURKING;
+import static alroy214.xkik.utilities.Statics.APP_DEFAULT_PREFERENCE;
+import static alroy214.xkik.utilities.Statics.APP_PREFERENCE_PACKAGE;
 
 
 /**
@@ -64,22 +74,60 @@ public class Settings {
     };
     private int current_version = 1;
 
-    private transient Activity creator;
+    private transient AppCompatActivity creator;
     private ConcurrentHashMap<String, LongStringArray> whoRead = new ConcurrentHashMap<>();
-   // private HashMap<String, Integer> colors = new HashMap<>(); // color settings
-   // private HashMap<String, String> strings = new HashMap<>(); // string settings
     private  SharedPreferences sharedPreferences;
     private  SharedPreferences.Editor editor;
 
-    public Settings(Context context) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public Settings(final Context context) {
+        sharedPreferences = new RemotePreferences(context,
+                APP_PREFERENCE_PACKAGE, APP_DEFAULT_PREFERENCE);
         editor = sharedPreferences.edit();
-        editor.putString("test_key","working"); // Just a test bro
+        editor.putString("test_key","working"); // Testing key for logs
         editor.apply();
     }
+    public Settings(SharedPreferences pref) {
+        sharedPreferences = pref;
+        if(!(pref instanceof XSharedPreferences)) {
+            editor = sharedPreferences.edit();
+            editor.putString("test_key","working"); // Testing key for logs
+            editor.apply();
+        }
+    }
 
-    private void ResetPrefs(){
-
+    public boolean checkLoadSettings(JSONObject tweaksObject, String versionNumber) {
+        if(sharedPreferences.getBoolean(IS_PREF_DEFAULT, false)){
+            return true;
+        }
+        boolean successfullyLoaded = true;
+        editor.putBoolean(IS_PREF_DEFAULT, true).commit();
+        JSONObject tweakList = null;
+        try {
+            tweakList = tweaksObject.getJSONObject(versionNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (tweakList == null) {
+            try {
+                tweakList = tweaksObject.getJSONObject(tweaksObject.getString(kikVersion));
+                successfullyLoaded = false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        try {
+            Iterator<String> temp = tweakList.keys();
+            while (temp.hasNext()) {
+                String key = temp.next();
+                editor.putString(key, String.valueOf(tweakList.get(key)));
+            }
+            editor.commit();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            successfullyLoaded = false;
+        }
+        return successfullyLoaded;
     }
 
     private void trySave() {
@@ -102,7 +150,7 @@ public class Settings {
      *
      * @param activity app activity
      */
-    public static void verifyStoragePermissions(Activity activity) {
+    public static void verifyStoragePermissions(AppCompatActivity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -212,43 +260,6 @@ public class Settings {
         editor.commit();
     }
 
-    /**
-     * Add a user who read a message
-     *
-     * @param who  Who read it
-     * @param uuid UUID of message
-     */
-    public void addWhoRead(String who, String uuid) {
-        if (whoRead.containsKey(uuid)) {
-            if (!whoRead.get(uuid).contains(who)) {
-                whoRead.get(uuid).addStrArr(who);
-            }
-        } else {
-            whoRead.put(uuid, new LongStringArray(System.currentTimeMillis() + 604800000L, new ArrayList<String>()));
-            whoRead.get(uuid).addStrArr(who);
-        }
-        purgeWhoRead();
-        try {
-            save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Purges the config file from old read notifications, to keep file size small
-     */
-    public void purgeWhoRead() {
-        ArrayList<String> del = new ArrayList<>();
-        for (String key : whoRead.keySet()) {
-            if (whoRead.get(key).getLong() < System.currentTimeMillis()) {
-                del.add(key);
-            }
-        }
-        for (String key : del){
-            whoRead.remove(key);
-        }
-    }
 
     public boolean isBETA() {
         return sharedPreferences.getBoolean(BETA, false);
@@ -268,11 +279,11 @@ public class Settings {
         editor.commit();
     }
 
-    public Activity getCreator() {
+    public AppCompatActivity getCreator() {
         return creator;
     }
 
-    public void setCreator(Activity creator) {
+    public void setCreator(AppCompatActivity creator) {
         this.creator = creator;
     }
 
@@ -425,6 +436,11 @@ public class Settings {
         editor.commit();
     }
 
+    public void setColor(Colors id, int color) {
+        editor.putInt(id.getColor(), color);
+        editor.commit();
+    }
+
     public boolean getDisableSave() {
         return sharedPreferences.getBoolean(DISABLE_SAVE, false);
     }
@@ -497,6 +513,10 @@ public class Settings {
         return sharedPreferences.getString(id, val);
     }
 
+    public String getString(Message id) {
+        return sharedPreferences.getString(id.toString(), "");
+    }
+
     public void setString(String id, String val) {
         editor.putString(id, val);
         editor.commit();
@@ -512,10 +532,10 @@ public class Settings {
         editor.commit();
     }
 
+    public int getColor(Colors color) {
+        return sharedPreferences.getInt(color.getColor(), -1);
+    }
     public int getColor(String color) {
         return sharedPreferences.getInt(color, -1);
     }
-
-
-
 }

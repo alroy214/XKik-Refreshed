@@ -48,6 +48,7 @@
     <string name="import_from_public_database">Import from public database</string>
     <string name="import_from_text_file">Import from text file</string>
     <string name="background_picture">Image Background</string>
+    <string name="graphic_enable">Graphics Enable</string>
     <string name="dark_chat_background">Dark Chat Background</string>
     <string name="disable_forwarding">Disable Forwarding</string>
     <string name="disable_saving">Disable Saving</string>
@@ -73,4 +74,6 @@
     <string name="bg_images">Background Image/s</string>
     <string name="bypass_no_save">Bypass no save</string>
     <string name="refresh">Refresh Drawable</string>
+    <string name="current_version">Your Kik app version: \</string>
+    <string name="status_fetch_failed">Could not fetch status.</string>
 </resources>

@@ -9,43 +9,43 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.pavelsikun.vintagechroma.ChromaDialog;
 import com.pavelsikun.vintagechroma.OnColorSelectedListener;
 import com.pavelsikun.vintagechroma.colormode.ColorMode;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
+import alroy214.xkik.MainActivity;
 import alroy214.xkik.R;
 import alroy214.xkik.settings.ColorSetting;
 import alroy214.xkik.settings.Settings;
 import alroy214.xkik.settings.StringSetting;
-import alroy214.xkik.utilities.Statics;
 
-import static alroy214.xkik.utilities.Statics.COLOR_CODE_BACKGROUND;
-import static alroy214.xkik.utilities.Statics.COLOR_CODE_INNER_WAVE;
-import static alroy214.xkik.utilities.Statics.COLOR_CODE_OUTGOING;
-import static alroy214.xkik.utilities.Statics.COLOR_CODE_TOOLBAR;
-import static alroy214.xkik.utilities.Statics.EXPRESSION_COLOR;
-import static alroy214.xkik.utilities.Statics.INCOMING_COLOR;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_BACKGROUND;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_EXPRESSION;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_INCOMING;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_INNER_WAVE;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_OUTGOING;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_PRIMARY;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_SECONDARY;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_TERTIARY;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_TOOLBAR;
+import static alroy214.xkik.enums.Colors.COLOR_CODE_WHITE;
+
 
 public class VisualFragment extends Fragment {
+    private Settings settings;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_visual, container, false);// Inflate the layout for this fragment
-        settings = new Settings(getContext());
+        if(getActivity() == null) {
+            return root;
+        }
+        settings = ((MainActivity)getContext()).getSettings();
 
         ViewGroup parent = root.findViewById(R.id.color_tl);
         for (ColorSetting c : colorSettings) {
@@ -58,12 +58,14 @@ public class VisualFragment extends Fragment {
         }
 
 
-        setBackground = root.findViewById(R.id.background_picture);
+        Button setBackground = root.findViewById(R.id.background_picture);
         setImagePicker();
-        accdate = root.findViewById(R.id.accdate_switch);
-        darkbg = root.findViewById(R.id.darkbg_switch);
-        scrolltxt = root.findViewById(R.id.scrolltxt_switch);
+        Switch accdate = root.findViewById(R.id.accdate_switch);
+        Switch graphics = root.findViewById(R.id.graphic_switch);
+        Switch darkbg = root.findViewById(R.id.darkbg_switch);
+        Switch scrolltxt = root.findViewById(R.id.scrolltxt_switch);
         accdate.setChecked(settings.getDateFormat() == 1);
+        graphics.setChecked(settings.getGraphics());
         darkbg.setChecked(settings.getDarkBg());
         scrolltxt.setChecked(settings.getScrollingtxt());
         accdate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -74,6 +76,12 @@ public class VisualFragment extends Fragment {
                 } else {
                     settings.setDateFormat(0); // no change
                 }
+            }
+        });
+        graphics.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                settings.setGraphics(isChecked);
             }
         });
         darkbg.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -95,25 +103,19 @@ public class VisualFragment extends Fragment {
 
 
 
-    Settings settings;
-    Switch accdate;
-    Switch darkbg;
-    Button setBackground;
-    Switch scrolltxt;
-
     ColorSetting[] colorSettings = new ColorSetting[]{
             /*new ColorSetting("Main Background", new String[]{"white"}, "#ffffffff"),
             new ColorSetting("Chat Background", new String[]{"chat_background_color","chat_info_background"},"#ffeeeeee"),*/
-            new ColorSetting("Primary Text", "gray_6", "#ff373a4b"),
-            new ColorSetting("Secondary Text", "gray_5", "#ff7a7d8e"),
-            new ColorSetting("Tertiary Text", "gray_4", "#ffa9adc1"),
+            new ColorSetting("Primary Text", COLOR_CODE_TERTIARY, "#ff373a4b"),
+            new ColorSetting("Secondary Text", COLOR_CODE_SECONDARY, "#ff7a7d8e"),
+            new ColorSetting("Tertiary Text", COLOR_CODE_PRIMARY, "#ffa9adc1"),
             new ColorSetting("Toolbar Background", COLOR_CODE_TOOLBAR, "#fffafafa"),
-            new ColorSetting("White", "white", "#ffeeeeee"),
-            new ColorSetting("Incoming Background", INCOMING_COLOR, "#ffeeeeee"), //Background of incoming text
+            new ColorSetting("White", COLOR_CODE_WHITE, "#ffeeeeee"),
+            new ColorSetting("Incoming Background", COLOR_CODE_INCOMING, "#ffeeeeee"), //Background of incoming text
             new ColorSetting("Background Color", COLOR_CODE_BACKGROUND, "#ffeeeeee"),
             new ColorSetting("Outgoing Color", COLOR_CODE_OUTGOING, "#1122bb"),
             new ColorSetting("Inner Wave", COLOR_CODE_INNER_WAVE, "#2233bb"),
-            new ColorSetting("Bottom Layout", EXPRESSION_COLOR, "#fffafafa"),
+            new ColorSetting("Bottom Layout", COLOR_CODE_EXPRESSION, "#fffafafa"),
     };
 
     StringSetting[] stringSettings = new StringSetting[]{
@@ -265,7 +267,7 @@ public class VisualFragment extends Fragment {
                             }
                         })
                         .create()
-                        .show(getParentFragmentManager(), "ChromaDialog");
+                        .show(getChildFragmentManager(), "ChromaDialog");
             }
         });
         b.setOnLongClickListener(new View.OnLongClickListener() {

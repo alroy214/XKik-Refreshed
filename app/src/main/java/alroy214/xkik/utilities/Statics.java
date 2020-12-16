@@ -1,10 +1,22 @@
 package alroy214.xkik.utilities;
 
 public class Statics {
-    public static final String COLOR_CODE_BACKGROUND = "background";
-    public static final String COLOR_CODE_TOOLBAR = "gray_1";
-    public static final String COLOR_CODE_INNER_WAVE = "wave";
-    public static final String COLOR_CODE_OUTGOING = "outgoing";
-    public static final String INCOMING_COLOR = "incoming";
-    public static final String EXPRESSION_COLOR = "expression_bar_background_color";
+    // Xposed Statics - database
+    public static final String XPOSED_DATABASE_FILE_NAME = "kikDatabase.db";
+
+    // Pref Statics
+    public static final String APP_PACKAGE = "alroy214.xkik";
+    public static final String APP_DEFAULT_PREFERENCE = APP_PACKAGE + "_preferences";
+    public static final String APP_PREFERENCE_PACKAGE = APP_PACKAGE + ".preferences";
+    // Kik App statics
+    public static final String KIK_PACKAGE = "kik.android";
+
+    public static final String CHROMA_TAG = "ChromaDialog";
+
+    // Who read statics
+    public static final String WHO_READ_DIR_NAME = "WhoRead";
+    public static final String WHO_READ_FILE_NAME = "wholurking";
+    public static final String WHO_READ_FILE_EXTENSION = ".txt";
+
+
 }

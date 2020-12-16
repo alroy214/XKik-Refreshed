@@ -60,11 +60,19 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentStart="true" />
 
+                    <Switch
+                        android:id="@+id/graphic_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/titletv"
+                        android:text="@string/graphic_enable" />
+
+
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_below="@+id/titletv"
+                        android:layout_below="@+id/graphic_switch"
                         android:id="@+id/color_tl">
 
                     </TableLayout>
